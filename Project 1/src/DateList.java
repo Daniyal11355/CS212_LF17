@@ -4,15 +4,20 @@ public abstract class DateList {
     protected int length;
 
     public DateList() {
-        first = null;
-        last = null;
-        length = 0;
+        DateNode node = new DateNode();
+        this.first = node;
+        this.last = node;
+        this.length = 0;
     }
 
     public void append(Date212 data) {
         DateNode node = new DateNode(data);
-        last.next = node;
-        last = node;
-        length++;
+        this.last.next = node;
+        this.last = node;
+        this.length++;
+    }
+
+    public DateListIterator reset() {
+        return (new DateListIterator(this.first.next));
     }
 }

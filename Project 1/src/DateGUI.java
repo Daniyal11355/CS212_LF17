@@ -1,10 +1,10 @@
 
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.HeadlessException;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+import java.util.StringTokenizer;
 import java.util.stream.IntStream;
 
 /**
@@ -25,14 +25,12 @@ public class DateGUI extends JFrame{
      */
     private final Dimension WIN_SIZE = new Dimension(400,200);
     private JTextArea textAreaLeft, textAreaRight;
-    /**
-     * store original array
-     */
-    private String[] originalStringArray;
-    /**
-     * Date212 arrays for use original and sorted
-     */
-    private Date212[] originalArray, sortedArray;
+
+    public String txtFile = null;
+    JMenuItem openAction;
+    JMenuItem exitAction;
+
+    UnsortedDateList udl;
     /**
      * initiates all JFrame elements
      *
@@ -46,6 +44,19 @@ public class DateGUI extends JFrame{
         this.setLocation(300, 250);
         this.setResizable(true);
         this.setLayout(new GridLayout(1, 2));
+        // Create a menu bar
+        JMenuBar menuBar = new JMenuBar();
+        // Add bar
+        this.setJMenuBar(menuBar);
+        // Define and add two drop down menu to the menubar
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+        // Add dropdowns
+
+        this.openAction = new JMenuItem("Open");
+        this.exitAction = new JMenuItem("Exit");
+        fileMenu.add(this.openAction);
+        fileMenu.add(this.exitAction);
 
         // initialize text area
         this.textAreaLeft = this.textArea();
@@ -61,14 +72,116 @@ public class DateGUI extends JFrame{
         this.setVisible(true);
     }
 
+    // clear text area
+    public void clear() {
+        this.textAreaRight.setText("");
+        this.textAreaLeft.setText("");
+    }
+
+    // sets txtFile to a new file name
+    public void openFile() {
+
+        this.openAction.addActionListener(new ActionListener() {
+            Component frame;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new java.io.File("."));
+                //chooser.setSelectedFile(new File(""));
+                chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+                // chooser.setAcceptAllFileFilterUsed(false);
+                if (chooser.showOpenDialog(frame) == JFileChooser.OPEN_DIALOG) {
+                    String[] fl = (String.valueOf(chooser.getSelectedFile()).split("\\\\"));
+                    txtFile = fl[fl.length - 1];
+
+
+                    dateFromFileToList();
+                    updateJFrame();
+                } else {
+                    // do when cancel
+                }
+            }
+
+        });
+    }
+
+    public void selfExit() {
+        this.exitAction.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+    }
+
+    // get values from file
+    public void dateFromFileToList() {
+
+
+        try (
+                FileReader fr = new FileReader(txtFile);
+                BufferedReader br = new BufferedReader(fr)
+        ) {
+            udl = new UnsortedDateList();
+            String line = br.readLine();
+            while(line != null) {
+                String[] dateLine = line.split(",");
+
+                for(String date: dateLine) {
+                    if(valueIsValid(date)) {
+                        udl.append(new Date212(date));
+                    }
+                }
+                line = br.readLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private boolean valueIsValid(String str) throws IllegalArgumentException {
+        boolean data = false;
+        // test for proper length
+
+        try {
+            if(str.length() != 8) {
+                throw new IllegalArgumentException();
+            }
+            // test for all integers
+            Integer.parseInt(str);
+            // test is month is valid
+
+            if (Integer.parseInt(str.substring(4, 6)) < 1 ||
+                    Integer.parseInt(str.substring(4, 6)) > 12) {
+                throw new IllegalArgumentException();
+            }
+            // test if day valid
+            else if (Integer.parseInt(str.substring(6, 8)) < 1 ||
+                    Integer.parseInt(str.substring(6, 8)) > 31) {
+                throw new IllegalArgumentException();
+            } else {
+                // all valid
+                data = true;
+            }
+        } catch (NumberFormatException e) {
+            //e.printStackTrace();
+        } finally {
+            return data;
+        }
+    }
+
     /**
      *
-     * @param arr  pass in a String array to update Date212[] and update the gui
+     *
      */
-    public void run(String[] arr) {
-        this.setOriginalStringArray(arr);
-        this.updateDates();
-        this.updateJFrame();
+    public void run() {
+
+        this.openFile();
+        this.selfExit();
+
     }
 
     /**
@@ -76,35 +189,32 @@ public class DateGUI extends JFrame{
      */
     private void updateJFrame() {
         // display original array
-        this.textAreaLeft.setText(
-                this.convertDateToSingleString(
-                        this.getOriginalStringArray()));
 
+        this.textAreaLeft.setText(
+                this.convertDateToSingleString(this.udl));
+/*
         // display sorted array
         this.textAreaRight.setText(
                 this.convertDateToSingleString(
                         this.getSortedArray()));
+   */
     }
-    /**
-    * update Date212[]
-    */
-    private void updateDates() {
-        this.setOriginalArray(this.getOriginalStringArray());
-        this.setSortedArray(this.getOriginalArray());
-    }
+
 
     /**
      * creates a single string to display
      *
-     * @param arr  an Object[] and runs toString on it
+     * @param dl  an DateList and runs toString on it
      *             using StringBuilder
      * @return     String to be displayed by gui
      */
-    private String convertDateToSingleString(Object[] arr) {
+
+    private String convertDateToSingleString(DateList dl) {
         StringBuilder inputText = new StringBuilder();
 
-        for(Object arg: arr) {
-            inputText.append(String.format("%s%n", arg.toString()));
+        DateListIterator dll = dl.reset();
+        while(dll.hasNext()) {
+            inputText.append(String.format("%s%n", dll.next()));
         }
         return inputText.toString();
     }
@@ -118,66 +228,5 @@ public class DateGUI extends JFrame{
         textArea.setEditable(false);
 
         return textArea;
-    }
-
-    /**
-     *
-     * @param arr  passed as reference and is sorted
-     */
-    private void doSelectionSort(Date212[] arr) {
-        for (int i = 0; i < arr.length - 1; i++) {
-            int index = i;
-            for (int j = i + 1; j < arr.length; j++) {
-                if (arr[j].compareTo(arr[index]) < 0) {
-                    index = j;
-                }
-            }
-            Date212 smallerNumber = arr[index];
-            arr[index] = arr[i];
-            arr[i] = smallerNumber;
-        }
-    }
-
-    // getters/ setters
-    public Date212[] getOriginalArray() {
-        return originalArray;
-    }
-    /**
-     *
-     * @param originalArray  makes equivalent Date212[]
-     * @see  java 8 -> lambdas
-     */
-    public void setOriginalArray(String[] originalArray) {
-        this.originalArray = new Date212[originalArray.length];
-        // fill the values of Date212 array
-        // using java 8 lambdas
-        IntStream.range(0, originalArray.length).forEach(
-                i -> this.originalArray[i] = new Date212(originalArray[i]));
-    }
-
-    public Date212[] getSortedArray() {
-        return sortedArray;
-    }
-
-    /**
-     *
-     * @param sortedArray  set value of sorted array and run sort method
-     */
-    public void setSortedArray(Date212[] sortedArray) {
-        this.sortedArray = new Date212[sortedArray.length];
-        // fill the values of Date212 array
-        // using java 8 lambdas
-        IntStream.range(0, sortedArray.length).forEach(
-                i -> this.sortedArray[i] = sortedArray[i]);
-        // run sort method on Date212 array
-        this.doSelectionSort(this.sortedArray);
-    }
-
-    public String[] getOriginalStringArray() {
-        return this.originalStringArray;
-    }
-
-    public void setOriginalStringArray(String[] originalStringArray) {
-        this.originalStringArray = originalStringArray;
     }
 }
