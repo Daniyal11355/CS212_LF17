@@ -1,13 +1,19 @@
 
-
+/**
+ *  A DateList class that adds new data in ascending order
+ */
 
 public class SortedDateList extends DateList {
-    private DateNode node;
 
     public SortedDateList() {
     }
 
-
+    /**
+     * Add method that checks for location to add new data
+     *
+     * @param data new data to be added to list
+     * @param node DateList before the new data is added
+     */
     public void add(Date212 data, SortedDateList node) {
 
         DateNode compareNode = node.first;
@@ -26,7 +32,7 @@ public class SortedDateList extends DateList {
                 break;
             }
 
-            // shift over on the linked list
+            // shift linked list
             compareNode = compareNode.next;
 
             // if end of linked list add new data to list

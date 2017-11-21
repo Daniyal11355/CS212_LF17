@@ -19,10 +19,10 @@ import java.io.IOException;
 
 /**
  *
- * @author  m.shamilov
+ *  JFrame class
+ *
+ *  @author  m.shamilov
  */
-
-
 public class DateGUI extends JFrame{
     /**
      *  use a Dimensions array to setPreferredSize()
@@ -31,11 +31,13 @@ public class DateGUI extends JFrame{
      */
     private final Dimension WIN_SIZE = new Dimension(400,200);
     private JTextArea textAreaLeft, textAreaRight;
-
+    // store the directory of file to open as String
     private String txtFile;
+    // JFrame menu items
     private JMenuItem openAction;
     private JMenuItem exitAction;
 
+    // linked lists
     private UnsortedDateList udl;
     private SortedDateList sdl;
     /**
@@ -87,17 +89,16 @@ public class DateGUI extends JFrame{
     }
 
     /**
+     *
      * results to be displayed
      */
     private void updateJFrame() {
-        // display original array
-
-        this.textAreaLeft.setText(
-                this.convertDateToSingleString(this.udl));
-
-        // display sorted array
-        this.textAreaRight.setText(
-                this.convertDateToSingleString(this.sdl));
+        // clear before load new data
+        this.clear();
+        // display original list
+        this.textAreaLeft.setText(this.udl.toString());
+        // display sorted list
+        this.textAreaRight.setText(this.sdl.toString());
     }
 
     /**
@@ -115,7 +116,6 @@ public class DateGUI extends JFrame{
      *
      * if new file is opened updates jframe
      */
-
     public void openFile() {
 
         this.openAction.addActionListener(new ActionListener() {
@@ -133,8 +133,6 @@ public class DateGUI extends JFrame{
                     // update with new file and display in jframe
                     dateFromFileToList();
                     updateJFrame();
-                } else {
-                    // do when cancel
                 }
             }
         });
@@ -145,12 +143,8 @@ public class DateGUI extends JFrame{
      * exit program dropdown option is selected
      */
     public void selfExit() {
-        this.exitAction.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
+        // java 8 lamda
+        this.exitAction.addActionListener(e -> System.exit(0));
     }
 
     /**
@@ -174,7 +168,6 @@ public class DateGUI extends JFrame{
                     if(valueIsValid(date)) {
                         udl.add(new Date212(date));
                         sdl.add(new Date212(date), sdl);
-
                     }
                 }
                 line = br.readLine();
@@ -185,25 +178,7 @@ public class DateGUI extends JFrame{
         }
     }
 
-    /**
-     * creates a single string to display
-     *
-     * @param dl  an DateList and runs toString on it
-     *             using StringBuilder
-     * @return     String to be displayed by gui
-     */
-
-    private String convertDateToSingleString(DateList dl) {
-        StringBuilder inputText = new StringBuilder();
-
-        DateListIterator dll = dl.reset();
-        while(dll.hasNext()) {
-            inputText.append(String.format("%s%n", dll.next()));
-        }
-        return inputText.toString();
-    }
-
-    /**
+     /**
      *
      * @return  JFrame text area
      */
@@ -229,10 +204,8 @@ public class DateGUI extends JFrame{
             if(str.length() != 8) {
                 throw new IllegalArgumentException();
             }
-            // test for all integers
-            Integer.parseInt(str);
-            // test is month is valid
 
+            // test is month is valid
             if (Integer.parseInt(str.substring(4, 6)) < 1 ||
                     Integer.parseInt(str.substring(4, 6)) > 12) {
                 throw new IllegalArgumentException();

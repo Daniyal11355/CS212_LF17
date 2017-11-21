@@ -16,7 +16,6 @@ public class Project1 {
      *
      * @param args  passed as txt file and sets it as String
      */
-
     public static void main(String[] args) {
 
         DateGUI gui = new DateGUI();
