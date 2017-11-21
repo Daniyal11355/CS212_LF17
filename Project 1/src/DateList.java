@@ -1,3 +1,6 @@
+
+
+
 public abstract class DateList {
     protected DateNode first;
     protected DateNode last;
@@ -19,5 +22,7 @@ public abstract class DateList {
 
     public DateListIterator reset() {
         return (new DateListIterator(this.first.next));
+
     }
+
 }
