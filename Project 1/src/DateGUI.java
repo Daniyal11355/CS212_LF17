@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import java.awt.Component;
@@ -36,6 +37,7 @@ public class DateGUI extends JFrame{
     // JFrame menu items
     private JMenuItem openAction;
     private JMenuItem exitAction;
+    private JMenuItem insertAction;
 
     // linked lists
     private UnsortedDateList udl;
@@ -47,24 +49,34 @@ public class DateGUI extends JFrame{
      */
     public DateGUI() throws HeadlessException {
         // set up JFrame parameters
-        super("Project 2 : M.Shamilov");
+        super("Project 3 : M.Shamilov");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setPreferredSize(WIN_SIZE);
         this.setLocation(300, 250);
         this.setResizable(true);
         this.setLayout(new GridLayout(1, 2));
+        // Initialize linked lists
+        this.udl = new UnsortedDateList();
+        this.sdl = new SortedDateList();
         // Create a menu bar
         JMenuBar menuBar = new JMenuBar();
         // Add bar
         this.setJMenuBar(menuBar);
         // Define and add two drop down menu to the menubar
         JMenu fileMenu = new JMenu("File");
+        // Add a second menu with one item
+        JMenu editMenu = new JMenu("Edit");
+        // Add menu to jframe
         menuBar.add(fileMenu);
-        // Add dropdown menu=
+        menuBar.add(editMenu);
+        // Add dropdown file menu
         this.openAction = new JMenuItem("Open");
         this.exitAction = new JMenuItem("Exit");
         fileMenu.add(this.openAction);
         fileMenu.add(this.exitAction);
+        // Add dropdown insert menu
+        this.insertAction = new JMenuItem("Insert");
+        editMenu.add(this.insertAction);
         // initialize text area
         this.textAreaLeft = this.textArea();
         this.textAreaRight = this.textArea();
@@ -86,6 +98,22 @@ public class DateGUI extends JFrame{
     public void run() {
         this.openFile();
         this.selfExit();
+        this.insertDate();
+    }
+
+    /**
+     *
+     */
+    private void insertDate() {
+        this.insertAction.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String date = JOptionPane.showInputDialog(null,
+                        "Add a new date\nformat: \"YYYYMMDD\"");
+
+                addData(date);
+            }
+        });
     }
 
     /**
@@ -94,7 +122,6 @@ public class DateGUI extends JFrame{
      */
     private void updateJFrame() {
         // clear before load new data
-        this.clear();
         // display original list
         this.textAreaLeft.setText(this.udl.toString());
         // display sorted list
@@ -103,9 +130,13 @@ public class DateGUI extends JFrame{
 
     /**
      *
-     * clears the text area in jframe
+     * clears the text area in jframe and linked lists
      */
     public void clear() {
+        // clears linked lists
+        this.udl = new UnsortedDateList();
+        this.sdl = new SortedDateList();
+        // clears jframe
         this.textAreaRight.setText("");
         this.textAreaLeft.setText("");
     }
@@ -131,6 +162,7 @@ public class DateGUI extends JFrame{
                     txtFile = (String.valueOf(chooser.getSelectedFile()));
 
                     // update with new file and display in jframe
+                    clear();
                     dateFromFileToList();
                     updateJFrame();
                 }
@@ -141,9 +173,10 @@ public class DateGUI extends JFrame{
     /**
      *
      * exit program dropdown option is selected
+     *
+     * @see java 8 lambda
      */
     public void selfExit() {
-        // java 8 lamda
         this.exitAction.addActionListener(e -> System.exit(0));
     }
 
@@ -151,30 +184,43 @@ public class DateGUI extends JFrame{
      *
      * opens a file and makes to linked lists
      * sorted and unsorted
+     *
+     * @see java 7 try-with-resources
      */
-    // get values from file
     public void dateFromFileToList() {
         try (
                 FileReader fr = new FileReader(txtFile);
                 BufferedReader br = new BufferedReader(fr)
         ) {
-            udl = new UnsortedDateList();
-            sdl = new SortedDateList();
             String line = br.readLine();
             while(line != null) {
                 String[] dateLine = line.split(",");
 
                 for(String date: dateLine) {
-                    if(valueIsValid(date)) {
-                        udl.add(new Date212(date));
-                        sdl.add(new Date212(date), sdl);
-                    }
+                    addData(date);
                 }
                 line = br.readLine();
             }
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * updates uld and sdl after testing for IllegalDate212Exception
+     *
+     * @param date String given by user or file
+     */
+    private void addData(String date) {
+        try {
+            Date212 d = new Date212(date);
+            this.udl.add(d);
+            this.sdl.add(d, this.sdl);
+            this.updateJFrame();
+        } catch (IllegalDate212Exception ide) {
+            System.out.println(ide);
+            // ide.printStackTrace();
         }
     }
 
@@ -189,39 +235,5 @@ public class DateGUI extends JFrame{
         return textArea;
     }
 
-    /**
-     * Exception handling method
-     *
-     * @param str given and checked to fit Date212 requirements
-     * @return true only if passed all tests
-     * @throws IllegalArgumentException
-     */
-    private boolean valueIsValid(String str) throws IllegalArgumentException {
-        boolean data = false;
-        // test for proper length
 
-        try {
-            if(str.length() != 8) {
-                throw new IllegalArgumentException();
-            }
-
-            // test is month is valid
-            if (Integer.parseInt(str.substring(4, 6)) < 1 ||
-                    Integer.parseInt(str.substring(4, 6)) > 12) {
-                throw new IllegalArgumentException();
-            }
-            // test if day valid
-            else if (Integer.parseInt(str.substring(6, 8)) < 1 ||
-                    Integer.parseInt(str.substring(6, 8)) > 31) {
-                throw new IllegalArgumentException();
-            } else {
-                // all valid
-                data = true;
-            }
-        } catch (NumberFormatException e) {
-            //e.printStackTrace();
-        } finally {
-            return data;
-        }
-    }
 }

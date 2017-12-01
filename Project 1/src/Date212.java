@@ -1,6 +1,6 @@
 
  /**
-  * NOTE:: all exceptions are handled before Date212 gets a value
+  *
   * <p>
   * Store the year, month and day as integers so you will need three
   * private instance variables the.
@@ -13,6 +13,7 @@
   * method should print the date in “mm dd, yyyy” format
   * (for example, 20171002 would be returned as “October 2, 2017”).
   *
+  * throws IllegalDate212Exception is value is not valid
   * @author  m.shamilov
   */
 
@@ -33,12 +34,75 @@ public class Date212 {
 
      /**
       *
-      * @param date  separated into three int variables
+      * @param date string value of date "20010101"
+      * @throws IllegalDate212Exception if date is not a valid argument
       */
-    public Date212(String date) {
-        this.setYear(Integer.parseInt(date.substring(0, 4)));
-        this.setMonth(Integer.parseInt(date.substring(4, 6)));
-        this.setDay(Integer.parseInt(date.substring(6, 8)));
+    public Date212(String date) throws IllegalDate212Exception {
+
+
+        if(isValidValue(date)) {
+            this.setYear(Integer.parseInt( (date.substring(0, date.length()-4)) ));
+            this.setMonth(Integer.parseInt( (date.substring(date.length()-4, date.length()-2)) ));
+            this.setDay(Integer.parseInt( (date.substring(date.length()-2, date.length())) ));
+        } else {
+            throw new IllegalDate212Exception(date + " not valid date");
+        }
+    }
+
+     /**
+      * test given value to meet calendar specifications
+      *
+      * minimum value can be five digits "10101" == jan 1, 1
+      * max value can be 8 digits "20000101" == jan 1, 2000
+      * year cannot be negative
+      *
+      * test for leap year
+      * formula: year must divide by 4 evenly,
+      *         if year is divisible by 100 it must also be divisible by 400
+      *
+      * @param str date from user of file
+      * @return true id date is passes all checks
+      */
+    private boolean isValidValue(String str) {
+        boolean value = false;
+        int[] months = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+        try {
+            if (str.length() < 9 && str.length() > 4) {
+
+                // get year, month, date
+                int d = Integer.parseInt( (str.substring(str.length()-2, str.length())) );
+                int m = Integer.parseInt( (str.substring(str.length()-4, str.length()-2)) );
+                int y = Integer.parseInt( (str.substring(0, str.length()-4)) );
+
+                // leap years
+                if( (y % 4 == 0) &&
+                        (y % 100 != 0) ) {
+                    months[1] = 29;
+                }
+                if( (y % 100 == 0) &&
+                        (y % 400 == 0) ) {
+                    months[1] = 29;
+                } // leap years
+
+                // check year is at least 1
+                if(y > 0) {
+                    // check month for valid entry
+                    if (m > 0 &&
+                            m <= months.length) {
+                        // check day for valid entry
+                        if ((d > 0) &&
+                                (d <= months[m - 1])) {
+                            value = true;
+                        } // valid day
+                    } // valid month
+                }
+            } // proper length
+        } catch (NumberFormatException ide) {
+             // ide.printStackTrace();
+        }finally {
+            return value;
+        }
     }
 
      /**
@@ -72,7 +136,6 @@ public class Date212 {
       * @param o  test to see if o is equal to self
       * @return   true is equal, otherwise false
       */
-    // returns true if 2 Date212 are ==
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -88,9 +151,8 @@ public class Date212 {
      /**
       * Takes the date int variables and formats them to <code>String</code>
       *
-      * @return  a single String object
+      * @return  formatted string 20171002 -> “October 2, 2017”
       */
-    // returns formatted string 20171002 -> “October 2, 2017”
     @Override
     public String toString() {
         String[] months = new String[]{"January", "February", "March",
