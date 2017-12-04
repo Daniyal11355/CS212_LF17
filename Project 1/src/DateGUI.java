@@ -31,6 +31,7 @@ public class DateGUI extends JFrame{
      *  @see  java.awt.Dimension
      */
     private final Dimension WIN_SIZE = new Dimension(400,200);
+    // left and right display of date
     private JTextArea textAreaLeft, textAreaRight;
     // store the directory of file to open as String
     private String txtFile;
@@ -62,7 +63,7 @@ public class DateGUI extends JFrame{
         JMenuBar menuBar = new JMenuBar();
         // Add bar
         this.setJMenuBar(menuBar);
-        // Define and add two drop down menu to the menubar
+        // Define and add two drop down menu to the menu bar
         JMenu fileMenu = new JMenu("File");
         // Add a second menu with one item
         JMenu editMenu = new JMenu("Edit");
@@ -224,7 +225,7 @@ public class DateGUI extends JFrame{
         }
     }
 
-     /**
+    /**
      *
      * @return  JFrame text area
      */
@@ -234,6 +235,4 @@ public class DateGUI extends JFrame{
 
         return textArea;
     }
-
-
 }

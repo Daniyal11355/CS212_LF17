@@ -19,9 +19,9 @@ public abstract class DateList {
     }
 
     /**
-     * Initialize a linked list with a first DateNode
+     * Add to the end of linked list
      *
-     * @param data
+     * @param data single Date212
      */
     public void append(Date212 data) {
         DateNode node = new DateNode(data);

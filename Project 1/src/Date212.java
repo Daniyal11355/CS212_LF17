@@ -33,6 +33,7 @@ public class Date212 {
     private int day;
 
      /**
+      * takes a string and test for proper format and calendar date
       *
       * @param date string value of date "20010101"
       * @throws IllegalDate212Exception if date is not a valid argument
@@ -45,18 +46,18 @@ public class Date212 {
             this.setMonth(Integer.parseInt( (date.substring(date.length()-4, date.length()-2)) ));
             this.setDay(Integer.parseInt( (date.substring(date.length()-2, date.length())) ));
         } else {
-            throw new IllegalDate212Exception(date + " not valid date");
+            throw new IllegalDate212Exception(date + " not valid");
         }
     }
 
      /**
-      * test given value to meet calendar specifications
+      * tests given value to meet calendar specifications
       *
-      * minimum value can be five digits "10101" == jan 1, 1
-      * max value can be 8 digits "20000101" == jan 1, 2000
-      * year cannot be negative
+      * - minimum value can be five digits "10101" == jan 1, 1
+      * - max value can be 8 digits "20010101" == jan 1, 2001
+      * - year cannot be negative
       *
-      * test for leap year
+      * - test for leap year
       * formula: year must divide by 4 evenly,
       *         if year is divisible by 100 it must also be divisible by 400
       *
@@ -68,39 +69,35 @@ public class Date212 {
         int[] months = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
         try {
+            //
             if (str.length() < 9 && str.length() > 4) {
-
-                // get year, month, date
+                // get day, month, year
                 int d = Integer.parseInt( (str.substring(str.length()-2, str.length())) );
                 int m = Integer.parseInt( (str.substring(str.length()-4, str.length()-2)) );
                 int y = Integer.parseInt( (str.substring(0, str.length()-4)) );
 
                 // leap years
-                if( (y % 4 == 0) &&
-                        (y % 100 != 0) ) {
+                if( (y % 4 == 0) && (y % 100 != 0) ) {
                     months[1] = 29;
                 }
-                if( (y % 100 == 0) &&
-                        (y % 400 == 0) ) {
+                if( (y % 100 == 0) && (y % 400 == 0) ) {
                     months[1] = 29;
                 } // leap years
 
                 // check year is at least 1
                 if(y > 0) {
                     // check month for valid entry
-                    if (m > 0 &&
-                            m <= months.length) {
+                    if (m > 0 && m <= months.length) {
                         // check day for valid entry
-                        if ((d > 0) &&
-                                (d <= months[m - 1])) {
+                        if ((d > 0) && (d <= months[m - 1])) {
                             value = true;
                         } // valid day
                     } // valid month
-                }
+                } // valid year
             } // proper length
         } catch (NumberFormatException ide) {
              // ide.printStackTrace();
-        }finally {
+        } finally {
             return value;
         }
     }

@@ -14,7 +14,7 @@ public class Project1 {
     /**
      * main method executes project
      *
-     * @param args  passed as txt file and sets it as String
+     * @param args not used in this version
      */
     public static void main(String[] args) {
 
