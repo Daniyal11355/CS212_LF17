@@ -41,8 +41,11 @@ public class DateGUI extends JFrame{
     private JMenuItem insertAction;
 
     // linked lists
-    private UnsortedDateList udl;
+    //private UnsortedDateList udl;
     private SortedDateList sdl;
+
+    // treemap
+    private DateTreeMap unsortedTreeMap;
     /**
      * initiates all JFrame elements
      *
@@ -56,8 +59,10 @@ public class DateGUI extends JFrame{
         this.setLocation(300, 250);
         this.setResizable(true);
         this.setLayout(new GridLayout(1, 2));
+        // Initialize tree map
+        this.unsortedTreeMap = new DateTreeMap();
         // Initialize linked lists
-        this.udl = new UnsortedDateList();
+        //this.udl = new UnsortedDateList();
         this.sdl = new SortedDateList();
         // Create a menu bar
         JMenuBar menuBar = new JMenuBar();
@@ -124,7 +129,8 @@ public class DateGUI extends JFrame{
     private void updateJFrame() {
         // clear before load new data
         // display original list
-        this.textAreaLeft.setText(this.udl.toString());
+        //this.textAreaLeft.setText(this.udl.toString());
+        this.textAreaLeft.setText(this.unsortedTreeMap.toString());
         // display sorted list
         this.textAreaRight.setText(this.sdl.toString());
     }
@@ -134,8 +140,10 @@ public class DateGUI extends JFrame{
      * clears the text area in jframe and linked lists
      */
     public void clear() {
+        // clears treeMap
+        this.unsortedTreeMap = new DateTreeMap();
         // clears linked lists
-        this.udl = new UnsortedDateList();
+        //this.udl = new UnsortedDateList();
         this.sdl = new SortedDateList();
         // clears jframe
         this.textAreaRight.setText("");
@@ -216,7 +224,8 @@ public class DateGUI extends JFrame{
     private void addData(String date) {
         try {
             Date212 d = new Date212(date);
-            this.udl.add(d);
+            this.unsortedTreeMap.addDate(d);
+            //this.udl.add(d);
             this.sdl.add(d, this.sdl);
             this.updateJFrame();
         } catch (IllegalDate212Exception ide) {
