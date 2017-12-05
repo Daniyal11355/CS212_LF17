@@ -1,3 +1,4 @@
+
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -10,28 +11,31 @@ public class DateTreeMap {
         treeLength = 0;
     }
 
-    public DateTreeMap(TreeMap<Integer, Date212> treeDate) {
-        this.treeDate = treeDate;
-    }
-
     @Override
     public String toString() {
         String fullDate = "";
 
-        for(Map.Entry e: treeDate.entrySet()) {
-            fullDate += e.getValue() + "\n";
+        for(Map.Entry value: treeDate.entrySet()) {
+            fullDate += value.getValue() + "\n";
         }
 
         return fullDate;
     }
 
-    public String toStringSorted(TreeMap<Integer, Date212> treeDate) {
+    public String toStringSorted() {
         String fullDate = "";
-        DateTreeMap sortedTree = new DateTreeMap(treeDate);
+        TreeMap<Integer, Date212> sortedTree = new TreeMap<>(this.treeDate);
 
+        // need a way to sort the values
+
+
+        for(Map.Entry value: sortedTree.entrySet()) {
+            fullDate += value.getValue() + "\n";
+        }
 
         return fullDate;
     }
+
 
     public void addDate(Date212 date){
         treeLength++;

@@ -41,11 +41,11 @@ public class DateGUI extends JFrame{
     private JMenuItem insertAction;
 
     // linked lists
-    //private UnsortedDateList udl;
-    private SortedDateList sdl;
+    // private UnsortedDateList udl;
+    // private SortedDateList sdl;
 
     // treemap
-    private DateTreeMap unsortedTreeMap;
+    private DateTreeMap dateTreeMap;
     /**
      * initiates all JFrame elements
      *
@@ -60,10 +60,10 @@ public class DateGUI extends JFrame{
         this.setResizable(true);
         this.setLayout(new GridLayout(1, 2));
         // Initialize tree map
-        this.unsortedTreeMap = new DateTreeMap();
+        this.dateTreeMap = new DateTreeMap();
         // Initialize linked lists
-        //this.udl = new UnsortedDateList();
-        this.sdl = new SortedDateList();
+        // this.udl = new UnsortedDateList();
+        // this.sdl = new SortedDateList();
         // Create a menu bar
         JMenuBar menuBar = new JMenuBar();
         // Add bar
@@ -129,10 +129,11 @@ public class DateGUI extends JFrame{
     private void updateJFrame() {
         // clear before load new data
         // display original list
-        //this.textAreaLeft.setText(this.udl.toString());
-        this.textAreaLeft.setText(this.unsortedTreeMap.toString());
+        // this.textAreaLeft.setText(this.udl.toString());
+        this.textAreaLeft.setText(this.dateTreeMap.toString());
         // display sorted list
-        this.textAreaRight.setText(this.sdl.toString());
+        // this.textAreaRight.setText(this.sdl.toString());
+        this.textAreaRight.setText(this.dateTreeMap.toStringSorted());
     }
 
     /**
@@ -141,10 +142,10 @@ public class DateGUI extends JFrame{
      */
     public void clear() {
         // clears treeMap
-        this.unsortedTreeMap = new DateTreeMap();
+        this.dateTreeMap = new DateTreeMap();
         // clears linked lists
         //this.udl = new UnsortedDateList();
-        this.sdl = new SortedDateList();
+        //this.sdl = new SortedDateList();
         // clears jframe
         this.textAreaRight.setText("");
         this.textAreaLeft.setText("");
@@ -224,9 +225,9 @@ public class DateGUI extends JFrame{
     private void addData(String date) {
         try {
             Date212 d = new Date212(date);
-            this.unsortedTreeMap.addDate(d);
-            //this.udl.add(d);
-            this.sdl.add(d, this.sdl);
+            this.dateTreeMap.addDate(d);
+            // this.udl.add(d);
+            // this.sdl.add(d, this.sdl);
             this.updateJFrame();
         } catch (IllegalDate212Exception ide) {
             System.out.println(ide);
