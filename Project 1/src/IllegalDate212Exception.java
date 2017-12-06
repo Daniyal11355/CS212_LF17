@@ -1,4 +1,8 @@
 
+/**
+ * custom exception method caught in Date212
+ *
+ */
 
 public class IllegalDate212Exception extends IllegalArgumentException {
 

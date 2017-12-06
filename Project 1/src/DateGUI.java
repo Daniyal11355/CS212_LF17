@@ -20,7 +20,8 @@ import java.io.IOException;
 
 /**
  *
- *  JFrame class
+ *  JFrame class display given values
+ *  JMenu options open, exit, insert
  *
  *  @author  m.shamilov
  */
@@ -40,11 +41,11 @@ public class DateGUI extends JFrame{
     private JMenuItem exitAction;
     private JMenuItem insertAction;
 
-    // linked lists
+    // linked lists not used for this example
     // private UnsortedDateList udl;
     // private SortedDateList sdl;
 
-    // treemap
+    // tree map
     private DateTreeMap dateTreeMap;
     /**
      * initiates all JFrame elements
@@ -53,7 +54,7 @@ public class DateGUI extends JFrame{
      */
     public DateGUI() throws HeadlessException {
         // set up JFrame parameters
-        super("Project 3 : M.Shamilov");
+        super("Project 4 : M.Shamilov");
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setPreferredSize(WIN_SIZE);
         this.setLocation(300, 250);
